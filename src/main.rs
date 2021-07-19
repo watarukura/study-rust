@@ -1,5 +1,5 @@
-use std::fs::read_to_string;
 use std::env::args;
+use std::fs::read_to_string;
 
 fn run_cat(path: String) {
     match read_to_string(path) {
