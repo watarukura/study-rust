@@ -7,22 +7,31 @@ struct GrepArgs {
     #[structopt(name = "PATTERN")]
     pattern: String,
     #[structopt(name = "FILE")]
-    path: String,
+    path: Vec<String>,
 }
 
-fn grep(state: &GrepArgs, content: String) {
+fn grep(state: &GrepArgs, content: String, file_name: &str) {
     for line in content.lines() {
         if line.contains(state.pattern.as_str()) {
-            println!("{}", line);
+            println!("{}: {}", file_name, line);
         }
     }
 }
 
 fn run(state: GrepArgs) {
-    match read_to_string(&state.path) {
-        Ok(content) => grep(&state, content),
-        Err(reason) => println!("{}", reason),
-    }
+    // for file in state.path.iter() {
+    //     match read_to_string(file) {
+    //         Ok(content) => grep(&state, content, file),
+    //         Err(reason) => println!("{}", reason),
+    //     }
+    // }
+    state
+        .path
+        .iter()
+        .for_each(|file| match read_to_string(file) {
+            Ok(content) => grep(&state, content, &file),
+            Err(reason) => println!("{}", reason),
+        })
 }
 
 fn main() {
