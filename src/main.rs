@@ -1,21 +1,16 @@
-fn fizzbuzz(num: u8) -> String {
-    if num % 15 == 0 {
-        "FizzBuzz".to_string()
-    } else if num % 3 == 0 {
-        "Fizz".to_string()
-    } else if num % 5 == 0 {
-        "Buzz".to_string()
-    } else {
-        num.to_string()
+use std::env::args;
+use std::fs::read_to_string;
+
+fn run_cat(path: String) {
+    match read_to_string(path) {
+        Ok(content) => print!("{}", content),
+        Err(reason) => println!("{}", reason),
     }
 }
 
 fn main() {
-    // for num in 0..100 {
-    //     println!("{}", fizzbuzz(num));
-    // }
-    let result = (0..100)
-        .map(fizzbuzz)
-        .fold(String::from(""), |acc, line| format!("{}\n{}", acc, line));
-    println!("{}", result);
+    match args().nth(1) {
+        Some(path) => run_cat(path),
+        None => println!("No path is specified!"),
+    }
 }
