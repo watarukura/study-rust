@@ -1,16 +1,30 @@
-use std::env::args;
 use std::fs::read_to_string;
+use structopt::StructOpt;
 
-fn run_cat(path: String) {
-    match read_to_string(path) {
-        Ok(content) => print!("{}", content),
+#[derive(StructOpt)]
+#[structopt(name = "rsgrep")]
+struct GrepArgs {
+    #[structopt(name = "PATTERN")]
+    pattern: String,
+    #[structopt(name = "FILE")]
+    path: String,
+}
+
+fn grep(state: &GrepArgs, content: String) {
+    for line in content.lines() {
+        if line.contains(state.pattern.as_str()) {
+            println!("{}", line);
+        }
+    }
+}
+
+fn run(state: GrepArgs) {
+    match read_to_string(&state.path) {
+        Ok(content) => grep(&state, content),
         Err(reason) => println!("{}", reason),
     }
 }
 
 fn main() {
-    match args().nth(1) {
-        Some(path) => run_cat(path),
-        None => println!("No path is specified!"),
-    }
+    run(GrepArgs::from_args())
 }
