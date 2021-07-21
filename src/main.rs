@@ -16,7 +16,10 @@ fn grep(state: &GrepArgs, content: String, file_name: &str) {
     for line in content.lines() {
         line_no = line_no + 1;
         if line.contains(state.pattern.as_str()) {
-            println!("{}({}): {}", file_name, line_no, line);
+            println!("{file_name}({line_no}): {line}",
+                     file_name = file_name,
+                     line_no = line_no,
+                     line = line);
         }
     }
 }
@@ -27,7 +30,7 @@ fn run(state: GrepArgs) {
         .par_iter()
         .for_each(|file| match read_to_string(file) {
             Ok(content) => grep(&state, content, &file),
-            Err(reason) => println!("{}", reason),
+            Err(reason) => println!("{reason}", reason = reason),
         })
 }
 
